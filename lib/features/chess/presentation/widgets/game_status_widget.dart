@@ -11,43 +11,84 @@ class GameStatusWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String statusText = turn == PieceColor.white
+        ? "WHITE'S TURN"
+        : "BLACK'S TURN";
+    Color statusColor = Theme.of(context).colorScheme.primary.withOpacity(0.8);
+
+    if (status == GameStatus.checkmate) {
+      statusText = "CHECKMATE";
+      statusColor = Colors.redAccent;
+    } else if (status == GameStatus.draw) {
+      statusText = "DRAW";
+      statusColor = Colors.orangeAccent;
+    }
+
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      padding: EdgeInsets.symmetric(vertical: 12.h),
+      child: Column(
         children: [
-          Text(
-            turn == PieceColor.white ? "WHITE'S TURN" : "BLACK'S TURN",
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 2.0,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
-            ),
-          ),
-          if (status == GameStatus.check)
-            Container(
-              margin: EdgeInsets.only(left: 12.w),
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: Colors.redAccent,
-                borderRadius: BorderRadius.circular(20.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.redAccent.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(
-                'CHECK',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 300),
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 11.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w900,
-                  letterSpacing: 1.0,
+                  letterSpacing: 2.5,
+                  color: statusColor,
                 ),
+                child: Text(statusText),
+              ),
+              if (status == GameStatus.check)
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.elasticOut,
+                  builder: (context, value, child) => Transform.scale(
+                    scale: value,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 12.w),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 6.h,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.redAccent, Colors.red.shade900],
+                        ),
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.redAccent.withOpacity(0.4),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        'CHECK',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          if (status == GameStatus.ongoing || status == GameStatus.check)
+            Container(
+              margin: EdgeInsets.only(top: 4.h),
+              height: 3.h,
+              width: 40.w,
+              decoration: BoxDecoration(
+                color: statusColor.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
         ],
