@@ -5,23 +5,27 @@ A premium, feature-rich chess application built with Flutter. Experience a profe
 ## ✨ Features
 
 ### 🏆 Gameplay & Rules
-- **Advanced Chess Rules**: Fully implemented **Castling**, **En Passant**, and **Pawn Promotion** (with UI selection).
-- **Move Validation**: Precise legal move calculation including check and checkmate detection.
+- **Advanced Chess Rules**: Fully implemented **Castling**, **En Passant**, and **Pawn Promotion** with a dedicated selection UI.
+- **Move Validation**: Precise legal move calculation including real-time check, checkmate, and draw detection (stalemate).
 - **Game Modes**:
-  - 👥 **Local Multiplayer**: Play against a friend on the same device with an automatic board rotation feature.
-  - 🤖 **Solo vs AI**: Challenge a built-in chess engine with smooth thinking animations.
+  - 👥 **Local Multiplayer**: Play against a friend with an automatic board rotation feature designed for face-to-face play.
+  - 🤖 **Solo vs AI**: Challenge a built-in AI with smooth "thinking" progress indicators.
 
-### 🎨 Premium Aesthetics
-- **Tournament Grade Visuals**: High-contrast chess pieces and a professional "Lichess-style" board palette.
-- **Integrated Coordinates**: Algebraic notation (A-H, 1-8) integrated directly into the board squares for a modern, clean look.
-- **Fluid UI**: Built with `flutter_screenutil` for perfect responsiveness on all devices.
-- **Dark/Light Mode**: Full theme support for comfortable playing environments.
+### 🎨 Premium Aesthetics & UX
+- **Tournament-Grade Visuals**: High-contrast chess pieces and a professional board palette designed for clarity and depth.
+- **Integrated Coordinates**: Algebraic notation (A-H, 1-8) integrated directly into the squares for a modern, clutter-free look.
+- **Juicy Animations**:
+  - **Elastic Dialogs**: High-energy "Game over" popups with custom victory/draw iconography.
+  - **CHECK Badge**: Animated high-contrast badge that scales up when the King is under attack.
+- **Dark/Light Mode**: Seamless theme switching with persistent state.
+- **Vibration Support**: Configured permissions for haptic feedback on Android and iOS.
 
 ### 🛠 Tech Stack
 - **Framework**: [Flutter](https://flutter.dev)
 - **State Management**: [Riverpod](https://riverpod.dev)
 - **Responsive Layout**: [Flutter ScreenUtil](https://pub.dev/packages/flutter_screenutil)
-- **Architecture**: Clean Architecture principles for maintainable and scalable code.
+- **Architecture**: Modular Clean Architecture with refactored, reusable widget components.
+- **Testing**: Includes comprehensive unit tests for move validation logic and widget tests for key UI flows.
 
 ## 🚀 Getting Started
 
@@ -38,12 +42,5 @@ A premium, feature-rich chess application built with Flutter. Experience a profe
    flutter run
    ```
 
-## 🗺 Roadmap
-- [ ] **Sound Effects**: Audio feedback for moves and captures.
-- [ ] **Move History**: Scrollable list of all moves in algebraic notation.
-- [ ] **Undo Button**: Ability to revert the last move.
-- [ ] **Chess Clock**: Configurable timers for timed matches.
-- [ ] **Animations**: Smooth piece sliding transitions.
-
 ---
-Built with ❤️ by Zyad Khedr.
+Built with ❤️ by Zyad Khidr.
