@@ -69,27 +69,81 @@ class ChessGamePage extends ConsumerWidget {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            if (state.isThinking) const LinearProgressIndicator(minHeight: 2),
-            Expanded(
-              child: AnimatedRotation(
-                turns: (showRotation && state.turn == PieceColor.black)
-                    ? 0.5
-                    : 0,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-                child: Column(
-                  children: [
-                    GameStatusWidget(turn: state.turn, status: state.status),
-                    CapturedPiecesWidget(captured: state.blackCaptured),
-                    const Expanded(child: Center(child: ChessBoardWidget())),
-                    CapturedPiecesWidget(captured: state.whiteCaptured),
-                  ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth > 800;
+
+            if (isWide) {
+              return Column(
+                children: [
+                  if (state.isThinking)
+                    const LinearProgressIndicator(minHeight: 2),
+                  GameStatusWidget(turn: state.turn, status: state.status),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 40.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: SingleChildScrollView(
+                              child: CapturedPiecesWidget(
+                                captured: state.blackCaptured,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 20.w),
+                          const AspectRatio(
+                            aspectRatio: 1,
+                            child: ChessBoardWidget(),
+                          ),
+                          SizedBox(width: 20.w),
+                          Expanded(
+                            flex: 1,
+                            child: SingleChildScrollView(
+                              child: CapturedPiecesWidget(
+                                captured: state.whiteCaptured,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return Column(
+              children: [
+                if (state.isThinking)
+                  const LinearProgressIndicator(minHeight: 2),
+                Expanded(
+                  child: AnimatedRotation(
+                    turns: (showRotation && state.turn == PieceColor.black)
+                        ? 0.5
+                        : 0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                    child: Column(
+                      children: [
+                        GameStatusWidget(
+                          turn: state.turn,
+                          status: state.status,
+                        ),
+                        CapturedPiecesWidget(captured: state.blackCaptured),
+                        const Expanded(
+                          child: Center(child: ChessBoardWidget()),
+                        ),
+                        CapturedPiecesWidget(captured: state.whiteCaptured),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ),
     );

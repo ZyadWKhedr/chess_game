@@ -45,24 +45,29 @@ class ChessHomePage extends ConsumerWidget {
             ],
           ),
         ),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            HomeLogo(),
-            SizedBox(height: 60),
-            HomeMenuButton(
-              label: 'Local Multiplayer',
-              icon: Icons.people,
-              mode: GameMode.pvp,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                HomeLogo(),
+                SizedBox(height: 60),
+                HomeMenuButton(
+                  label: 'Local Multiplayer',
+                  icon: Icons.people,
+                  mode: GameMode.pvp,
+                ),
+                SizedBox(height: 20),
+                HomeMenuButton(
+                  label: 'Play vs AI',
+                  icon: Icons.computer,
+                  mode: GameMode.pva,
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            HomeMenuButton(
-              label: 'Play vs AI',
-              icon: Icons.computer,
-              mode: GameMode.pva,
-            ),
-          ],
+          ),
         ),
       ),
     );
