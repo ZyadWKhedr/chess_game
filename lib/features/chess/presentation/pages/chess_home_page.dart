@@ -50,10 +50,33 @@ class ChessHomePage extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.grid_4x4,
-              size: 100.sp,
-              color: Theme.of(context).colorScheme.primary,
+            Container(
+              padding: EdgeInsets.all(24.r),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  width: 4,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.1),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  ),
+                ],
+              ),
+              child: Text(
+                '♔',
+                style: TextStyle(
+                  fontSize: 80.sp,
+                  color: Theme.of(context).colorScheme.primary,
+                  height: 1,
+                ),
+              ),
             ),
             SizedBox(height: 20.h),
             Text(
