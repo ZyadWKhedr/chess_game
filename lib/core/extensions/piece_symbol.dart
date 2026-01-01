@@ -22,7 +22,7 @@ extension PieceSymbol on Piece {
             PieceType.rook: '♜',
             PieceType.bishop: '♝',
             PieceType.knight: '♞',
-            PieceType.pawn: '♟',
+            PieceType.pawn: '♙',
           }[type]!;
   }
 
