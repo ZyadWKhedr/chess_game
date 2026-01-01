@@ -48,6 +48,7 @@ class ChessHomePage extends ConsumerWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               Icons.grid_4x4,
@@ -56,12 +57,14 @@ class ChessHomePage extends ConsumerWidget {
             ),
             SizedBox(height: 20.h),
             Text(
-              'FLUTTER CHESS',
+              'GRANDMASTER CHESS',
               style: TextStyle(
-                fontSize: 32.sp,
-                fontWeight: FontWeight.bold,
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w900,
                 letterSpacing: 4,
+                color: Theme.of(context).colorScheme.primary,
               ),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 60.h),
             _buildMenuButton(

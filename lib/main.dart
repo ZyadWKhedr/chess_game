@@ -21,7 +21,7 @@ class ChessApp extends ConsumerWidget {
       splitScreenMode: true,
       builder: (_, child) {
         return MaterialApp(
-          title: 'Flutter Chess',
+          title: 'Grandmaster Chess',
           debugShowCheckedModeBanner: false,
           themeMode: themeMode,
           theme: ThemeData(

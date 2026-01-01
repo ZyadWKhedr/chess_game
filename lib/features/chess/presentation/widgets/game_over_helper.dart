@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../provider/chess_game_notifier.dart';
-import '../provider/game_state.dart';
 
 class GameOverHelper {
   static void showGameOverDialog(
