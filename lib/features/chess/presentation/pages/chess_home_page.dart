@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../provider/chess_game_notifier.dart';
 import '../provider/game_state.dart';
 import '../provider/theme_provider.dart';
-import 'chess_game_page.dart';
+import '../widgets/home_menu_button.dart';
+import '../widgets/home_logo.dart';
 
 class ChessHomePage extends ConsumerWidget {
   const ChessHomePage({super.key});
@@ -46,102 +45,24 @@ class ChessHomePage extends ConsumerWidget {
             ],
           ),
         ),
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              padding: EdgeInsets.all(24.r),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                  width: 4,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withOpacity(0.1),
-                    blurRadius: 20,
-                    spreadRadius: 5,
-                  ),
-                ],
-              ),
-              child: Text(
-                '♔',
-                style: TextStyle(
-                  fontSize: 80.sp,
-                  color: Theme.of(context).colorScheme.primary,
-                  height: 1,
-                ),
-              ),
-            ),
-            SizedBox(height: 20.h),
-            Text(
-              'GRANDMASTER CHESS',
-              style: TextStyle(
-                fontSize: 28.sp,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 4,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 60.h),
-            _buildMenuButton(
-              context,
-              ref,
+            HomeLogo(),
+            SizedBox(height: 60),
+            HomeMenuButton(
               label: 'Local Multiplayer',
               icon: Icons.people,
               mode: GameMode.pvp,
             ),
-            SizedBox(height: 20.h),
-            _buildMenuButton(
-              context,
-              ref,
+            SizedBox(height: 20),
+            HomeMenuButton(
               label: 'Play vs AI',
               icon: Icons.computer,
               mode: GameMode.pva,
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuButton(
-    BuildContext context,
-    WidgetRef ref, {
-    required String label,
-    required IconData icon,
-    required GameMode mode,
-  }) {
-    return SizedBox(
-      width: 280.w,
-      height: 60.h,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.r),
-          ),
-          elevation: 0,
-          backgroundColor: Theme.of(
-            context,
-          ).colorScheme.primary.withOpacity(0.08),
-          foregroundColor: Theme.of(context).colorScheme.primary,
-        ).copyWith(elevation: ButtonStyleButton.allOrNull(0)),
-        onPressed: () {
-          ref.read(chessGameProvider.notifier).initGame(mode);
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const ChessGamePage()));
-        },
-        icon: Icon(icon, size: 24.sp),
-        label: Text(
-          label,
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800),
         ),
       ),
     );
