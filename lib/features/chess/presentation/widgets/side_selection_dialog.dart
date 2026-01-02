@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../domain/entities/piece.dart';
-import 'package:grandmaster_chess/core/extensions/piece_symbol.dart';
 
 class SideSelectionDialog extends StatelessWidget {
   const SideSelectionDialog({super.key});
