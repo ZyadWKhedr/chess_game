@@ -8,6 +8,7 @@ import '../widgets/home_menu_button.dart';
 import '../widgets/home_logo.dart';
 import '../widgets/banner_ad_widget.dart';
 import '../widgets/side_selection_dialog.dart';
+import '../widgets/difficulty_selection_dialog.dart';
 import 'chess_game_page.dart';
 
 class ChessHomePage extends ConsumerWidget {
@@ -97,17 +98,27 @@ class ChessHomePage extends ConsumerWidget {
       builder: (context) => const SideSelectionDialog(),
     );
 
-    if (selectedColor != null) {
-      if (context.mounted) {
-        _startGame(context, ref, selectedColor);
+    if (selectedColor != null && context.mounted) {
+      final selectedDifficulty = await showDialog<Difficulty>(
+        context: context,
+        builder: (context) => const DifficultySelectionDialog(),
+      );
+
+      if (selectedDifficulty != null && context.mounted) {
+        _startGame(context, ref, selectedColor, selectedDifficulty);
       }
     }
   }
 
-  void _startGame(BuildContext context, WidgetRef ref, PieceColor color) {
+  void _startGame(
+    BuildContext context,
+    WidgetRef ref,
+    PieceColor color,
+    Difficulty difficulty,
+  ) {
     ref
         .read(chessGameProvider.notifier)
-        .initGame(GameMode.pva, playerColor: color);
+        .initGame(GameMode.pva, playerColor: color, difficulty: difficulty);
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => const ChessGamePage()));

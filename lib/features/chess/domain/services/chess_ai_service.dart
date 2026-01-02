@@ -1,3 +1,4 @@
+import '../../presentation/provider/game_state.dart';
 import '../../domain/entities/board.dart';
 import '../../domain/entities/move.dart';
 import '../../domain/entities/piece.dart';
@@ -49,7 +50,23 @@ class ChessAIService {
     [-20, -10, -10, -10, -10, -10, -10, -20],
   ];
 
-  Move? findBestMove(Board board, PieceColor aiColor, int depth) {
+  Move? findBestMove(Board board, PieceColor aiColor, Difficulty difficulty) {
+    int depth;
+    switch (difficulty) {
+      case Difficulty.beginner:
+        depth = 1;
+        break;
+      case Difficulty.intermediate:
+        depth = 2;
+        break;
+      case Difficulty.master:
+        depth = 3;
+        break;
+      case Difficulty.grandmaster:
+        depth = 4;
+        break;
+    }
+
     Move? bestMove;
     int bestValue = -999999;
 
@@ -76,13 +93,23 @@ class ChessAIService {
         aiColor,
       );
 
-      if (boardValue > bestValue) {
+      // Add a little randomness for beginner/intermediate to avoid identical games
+      if (difficulty == Difficulty.beginner &&
+          (boardValue == bestValue) &&
+          (DateTime.now().microsecond % 2 == 0)) {
+        bestMove = move;
+      } else if (boardValue > bestValue) {
         bestValue = boardValue;
         bestMove = move;
       }
     }
 
     return bestMove;
+  }
+
+  // Exposed for checking board status (Chat features)
+  int evaluateBoardState(Board board, PieceColor color) {
+    return _evaluateBoard(board, color);
   }
 
   int _minimax(

@@ -10,6 +10,8 @@ enum GameMode {
 
 enum GameStatus { ongoing, check, checkmate, draw }
 
+enum Difficulty { beginner, intermediate, master, grandmaster }
+
 class GameState {
   final Board board;
   final PieceColor turn;
@@ -24,6 +26,8 @@ class GameState {
   final Move? pendingPromotion;
 
   final PieceColor playerColor;
+  final Difficulty aiDifficulty;
+  final String? aiMessage;
 
   // Advanced Rules State
   final SquarePosition? enPassantTarget;
@@ -41,6 +45,8 @@ class GameState {
     required this.blackCaptured,
     required this.gameMode,
     this.playerColor = PieceColor.white,
+    this.aiDifficulty = Difficulty.intermediate,
+    this.aiMessage,
     this.isThinking = false,
     this.status = GameStatus.ongoing,
     this.lastMove,
@@ -55,6 +61,7 @@ class GameState {
   factory GameState.initial({
     GameMode mode = GameMode.pvp,
     PieceColor playerColor = PieceColor.white,
+    Difficulty difficulty = Difficulty.intermediate,
   }) {
     return GameState(
       board: Board.initial(),
@@ -65,6 +72,7 @@ class GameState {
       blackCaptured: const [],
       gameMode: mode,
       playerColor: playerColor,
+      aiDifficulty: difficulty,
     );
   }
 
@@ -86,6 +94,9 @@ class GameState {
     bool? canCastleBlackKingSide,
     bool? canCastleBlackQueenSide,
     PieceColor? playerColor,
+    Difficulty? aiDifficulty,
+    String? aiMessage,
+    bool clearMessage = false,
   }) {
     return GameState(
       board: board ?? this.board,
@@ -109,6 +120,8 @@ class GameState {
       canCastleBlackQueenSide:
           canCastleBlackQueenSide ?? this.canCastleBlackQueenSide,
       playerColor: playerColor ?? this.playerColor,
+      aiDifficulty: aiDifficulty ?? this.aiDifficulty,
+      aiMessage: clearMessage ? null : (aiMessage ?? this.aiMessage),
     );
   }
 }

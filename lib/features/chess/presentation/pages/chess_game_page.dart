@@ -9,6 +9,7 @@ import '../widgets/chessboard_widget.dart';
 import '../widgets/captured_pieces_widget.dart';
 import '../widgets/game_status_widget.dart';
 import '../widgets/game_over_helper.dart';
+import '../widgets/ai_chat_bubble.dart';
 
 class ChessGamePage extends ConsumerWidget {
   const ChessGamePage({super.key});
@@ -132,7 +133,21 @@ class ChessGamePage extends ConsumerWidget {
                     children: [
                       GameStatusWidget(turn: state.turn, status: state.status),
                       CapturedPiecesWidget(captured: topCaptured),
-                      const Expanded(child: Center(child: ChessBoardWidget())),
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            const Center(child: ChessBoardWidget()),
+                            if (state.gameMode == GameMode.pva)
+                              const Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                child: Center(child: AiChatBubble()),
+                              ),
+                          ],
+                        ),
+                      ),
                       CapturedPiecesWidget(captured: bottomCaptured),
                     ],
                   ),
