@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'features/chess/presentation/pages/chess_home_page.dart';
+import 'features/chess/presentation/pages/splash_screen.dart';
 import 'features/chess/presentation/provider/theme_provider.dart';
 
 Future<void> main() async {
@@ -39,7 +39,7 @@ class ChessApp extends ConsumerWidget {
             colorSchemeSeed: Colors.brown,
             scaffoldBackgroundColor: Colors.grey[900],
           ),
-          home: const ChessHomePage(),
+          home: const SplashScreen(),
         );
       },
     );

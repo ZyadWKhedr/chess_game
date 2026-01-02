@@ -10,6 +10,7 @@ import '../widgets/captured_pieces_widget.dart';
 import '../widgets/game_status_widget.dart';
 import '../widgets/game_over_helper.dart';
 import '../widgets/ai_chat_bubble.dart';
+import '../../../../core/providers/ad_provider.dart';
 
 class ChessGamePage extends ConsumerWidget {
   const ChessGamePage({super.key});
@@ -23,21 +24,25 @@ class ChessGamePage extends ConsumerWidget {
         _showPromotionDialog(context, ref, next.turn);
       }
 
-      if (next.status == GameStatus.checkmate) {
-        final winner = next.turn == PieceColor.white ? 'Black' : 'White';
-        GameOverHelper.showGameOverDialog(
-          context,
-          ref,
-          'Checkmate!',
-          '$winner wins the game.',
-        );
-      } else if (next.status == GameStatus.draw) {
-        GameOverHelper.showGameOverDialog(
-          context,
-          ref,
-          'Draw!',
-          'The game ended in a draw.',
-        );
+      if (next.status != previous?.status) {
+        if (next.status == GameStatus.checkmate) {
+          final winner = next.turn == PieceColor.white ? 'Black' : 'White';
+          _handleGameOver(
+            context,
+            ref,
+            next.gameMode,
+            'Checkmate!',
+            '$winner wins the game.',
+          );
+        } else if (next.status == GameStatus.draw) {
+          _handleGameOver(
+            context,
+            ref,
+            next.gameMode,
+            'Draw!',
+            'The game ended in a draw.',
+          );
+        }
       }
     });
 
@@ -200,5 +205,24 @@ class ChessGamePage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _handleGameOver(
+    BuildContext context,
+    WidgetRef ref,
+    GameMode mode,
+    String title,
+    String content,
+  ) {
+    if (mode == GameMode.pva) {
+      final adService = ref.read(interstitialAdProvider);
+      adService.showAd(
+        onAdDismissed: () {
+          GameOverHelper.showGameOverDialog(context, ref, title, content);
+        },
+      );
+    } else {
+      GameOverHelper.showGameOverDialog(context, ref, title, content);
+    }
   }
 }

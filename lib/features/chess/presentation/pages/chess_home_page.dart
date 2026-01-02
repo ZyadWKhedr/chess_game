@@ -9,6 +9,7 @@ import '../widgets/home_logo.dart';
 import '../widgets/banner_ad_widget.dart';
 import '../widgets/side_selection_dialog.dart';
 import '../widgets/difficulty_selection_dialog.dart';
+import '../../../../core/providers/ad_provider.dart';
 import 'chess_game_page.dart';
 
 class ChessHomePage extends ConsumerWidget {
@@ -16,6 +17,8 @@ class ChessHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Initialize Ad Service early so it's ready when game ends
+    ref.read(interstitialAdProvider);
     final themeMode = ref.watch(themeProvider);
 
     return Scaffold(

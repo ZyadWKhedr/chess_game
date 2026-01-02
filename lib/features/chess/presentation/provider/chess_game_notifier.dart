@@ -93,11 +93,13 @@ class ChessGameNotifier extends StateNotifier<GameState> {
 
   void promotePiece(PieceType type) {
     var newState = _gameService.promotePiece(state, type);
+    newState = newState.copyWith(isThinking: false);
     _handleStateUpdates(newState);
   }
 
   void _applyMove(Move move) {
     var newState = _gameService.applyMove(state, move);
+    newState = newState.copyWith(isThinking: false);
     _handleStateUpdates(newState);
   }
 
