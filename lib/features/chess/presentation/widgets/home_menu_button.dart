@@ -9,12 +9,14 @@ class HomeMenuButton extends ConsumerWidget {
   final String label;
   final IconData icon;
   final GameMode mode;
+  final VoidCallback? onTap;
 
   const HomeMenuButton({
     super.key,
     required this.label,
     required this.icon,
     required this.mode,
+    this.onTap,
   });
 
   @override
@@ -30,15 +32,17 @@ class HomeMenuButton extends ConsumerWidget {
           elevation: 0,
           backgroundColor: Theme.of(
             context,
-          ).colorScheme.primary.withOpacity(0.08),
+          ).colorScheme.primary.withValues(alpha: 0.08),
           foregroundColor: Theme.of(context).colorScheme.primary,
         ).copyWith(elevation: ButtonStyleButton.allOrNull(0)),
-        onPressed: () {
-          ref.read(chessGameProvider.notifier).initGame(mode);
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const ChessGamePage()));
-        },
+        onPressed:
+            onTap ??
+            () {
+              ref.read(chessGameProvider.notifier).initGame(mode);
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const ChessGamePage()));
+            },
         icon: Icon(icon, size: 24.sp),
         label: Text(
           label,

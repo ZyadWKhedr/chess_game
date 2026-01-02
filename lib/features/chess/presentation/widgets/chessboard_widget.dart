@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/core/extensions/piece_symbol.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:grandmaster_chess/core/extensions/piece_symbol.dart';
 import '../provider/chess_game_notifier.dart';
 import '../provider/game_state.dart';
 import '../../domain/entities/piece.dart';
@@ -23,9 +23,11 @@ class ChessBoardWidget extends ConsumerWidget {
         ? const Color(0xFF2B2B2B)
         : const Color(0xFFB58863);
 
-    final selectedColor = Colors.yellow.withOpacity(0.6);
-    final lastMoveColor = Colors.blue.withOpacity(0.4);
-    final checkColor = Colors.red.withOpacity(0.6);
+    final selectedColor = Colors.yellow.withValues(alpha: 0.6);
+    final lastMoveColor = Colors.blue.withValues(alpha: 0.4);
+    final checkColor = Colors.red.withValues(alpha: 0.6);
+
+    final isFlipped = state.playerColor == PieceColor.black;
 
     return AspectRatio(
       aspectRatio: 1,
@@ -35,7 +37,7 @@ class ChessBoardWidget extends ConsumerWidget {
           borderRadius: BorderRadius.circular(4.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withValues(alpha: 0.4),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -48,8 +50,11 @@ class ChessBoardWidget extends ConsumerWidget {
             crossAxisCount: 8,
           ),
           itemBuilder: (context, index) {
-            final row = index ~/ 8;
-            final col = index % 8;
+            final visualRow = index ~/ 8;
+            final visualCol = index % 8;
+
+            final row = isFlipped ? 7 - visualRow : visualRow;
+            final col = isFlipped ? 7 - visualCol : visualCol;
 
             final piece = state.board.pieceAt(row, col);
             final isSelected =
@@ -97,7 +102,7 @@ class ChessBoardWidget extends ConsumerWidget {
                 child: Stack(
                   children: [
                     // Vertical Rank Coordinate (Inside Left Squares)
-                    if (col == 0)
+                    if (visualCol == 0)
                       Positioned(
                         top: 2,
                         left: 2,
@@ -113,7 +118,7 @@ class ChessBoardWidget extends ConsumerWidget {
                         ),
                       ),
                     // Horizontal File Coordinate (Inside Bottom Squares)
-                    if (row == 7)
+                    if (visualRow == 7)
                       Positioned(
                         bottom: 0,
                         right: 2,
@@ -134,12 +139,12 @@ class ChessBoardWidget extends ConsumerWidget {
                           width: 14.w,
                           height: 14.h,
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.15),
+                            color: Colors.black.withValues(alpha: 0.15),
                             shape: BoxShape.circle,
                           ),
                         ),
                       ),
-                    Center(child: _buildPiece(context, piece)),
+                    Center(child: _buildPiece(context, piece, state.gameMode)),
                   ],
                 ),
               ),
@@ -150,7 +155,7 @@ class ChessBoardWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildPiece(BuildContext context, Piece? piece) {
+  Widget _buildPiece(BuildContext context, Piece? piece, GameMode gameMode) {
     if (piece == null) return const SizedBox.shrink();
 
     // Precise hierarchical scaling for a professional look
@@ -163,6 +168,13 @@ class ChessBoardWidget extends ConsumerWidget {
       PieceType.pawn => 26.sp,
     };
 
-    return piece.render(fontSize: fontSize);
+    final widget = piece.render(fontSize: fontSize);
+
+    // In local multiplayer, rotate black pieces to face the black player (who sits at the top)
+    if (gameMode == GameMode.pvp && piece.color == PieceColor.black) {
+      return RotatedBox(quarterTurns: 2, child: widget);
+    }
+
+    return widget;
   }
 }

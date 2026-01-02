@@ -66,7 +66,22 @@ class MoveValidator {
       return true;
     }
 
-    final hypotheticalBoard = _applyMoveToBoard(board, move);
+    // Apply move to a hypothetical board to check for king safety
+    Board hypotheticalBoard = _applyMoveToBoard(board, move);
+
+    // Handle En Passant capture on hypothetical board
+    // If pawn moves diagonally to an empty square, it's En Passant
+    if (piece.type == PieceType.pawn &&
+        (move.toCol - move.fromCol).abs() == 1 &&
+        board.pieceAt(move.toRow, move.toCol) == null) {
+      // Remove the captured pawn (which is at [fromRow, toCol])
+      final newSquares = hypotheticalBoard.squares
+          .map((row) => List<Piece?>.from(row))
+          .toList();
+      newSquares[move.fromRow][move.toCol] = null;
+      hypotheticalBoard = Board(newSquares);
+    }
+
     if (isKingInCheck(hypotheticalBoard, piece.color)) {
       return false;
     }

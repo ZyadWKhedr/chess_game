@@ -14,8 +14,11 @@ class ChessGameNotifier extends StateNotifier<GameState> {
   final MoveValidator _validator = MoveValidator();
   final ChessAIService _aiService = ChessAIService();
 
-  void initGame(GameMode mode) {
-    state = GameState.initial(mode: mode);
+  void initGame(GameMode mode, {PieceColor playerColor = PieceColor.white}) {
+    state = GameState.initial(mode: mode, playerColor: playerColor);
+    if (mode == GameMode.pva && playerColor == PieceColor.black) {
+      _makeAiMove();
+    }
   }
 
   void selectSquare(int row, int col) {
@@ -23,6 +26,11 @@ class ChessGameNotifier extends StateNotifier<GameState> {
         state.status == GameStatus.checkmate ||
         state.status == GameStatus.draw)
       return;
+
+    // In PvA, prevent user from selecting pieces if it's not their turn
+    if (state.gameMode == GameMode.pva && state.turn != state.playerColor) {
+      return;
+    }
 
     final piece = state.board.pieceAt(row, col);
 
@@ -74,6 +82,10 @@ class ChessGameNotifier extends StateNotifier<GameState> {
     if (state.isThinking ||
         state.status == GameStatus.checkmate ||
         state.status == GameStatus.draw)
+      return;
+
+    // In PvA, prevent move attempts if not user turn
+    if (state.gameMode == GameMode.pva && state.turn != state.playerColor)
       return;
 
     final selected = state.selected;
@@ -198,7 +210,7 @@ class ChessGameNotifier extends StateNotifier<GameState> {
       if ((movingPiece.color == PieceColor.white && move.toRow == 0) ||
           (movingPiece.color == PieceColor.black && move.toRow == 7)) {
         // If it's a player move, pause for choice
-        if (state.gameMode == GameMode.pvp || state.turn == PieceColor.white) {
+        if (state.gameMode == GameMode.pvp || state.turn == state.playerColor) {
           state = state.copyWith(pendingPromotion: move);
           return;
         } else {
@@ -313,7 +325,7 @@ class ChessGameNotifier extends StateNotifier<GameState> {
     if (state.status == GameStatus.checkmate || state.status == GameStatus.draw)
       return;
 
-    if (state.gameMode == GameMode.pva && state.turn == PieceColor.black) {
+    if (state.gameMode == GameMode.pva && state.turn != state.playerColor) {
       _makeAiMove();
     }
   }
@@ -368,7 +380,7 @@ class ChessGameNotifier extends StateNotifier<GameState> {
     state = state.copyWith(isThinking: true);
     await Future.delayed(const Duration(milliseconds: 800)); // Smooth timing
 
-    final bestMove = _aiService.findBestMove(state.board, PieceColor.black, 3);
+    final bestMove = _aiService.findBestMove(state.board, state.turn, 3);
     if (bestMove != null) {
       _applyMove(bestMove);
     }

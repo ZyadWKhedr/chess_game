@@ -14,7 +14,7 @@ class GameOverHelper {
       context: context,
       barrierDismissible: false,
       barrierLabel: 'Game Over',
-      barrierColor: Colors.black.withOpacity(0.75),
+      barrierColor: Colors.black.withValues(alpha: 0.75),
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (context, anim1, anim2) => const SizedBox(),
       transitionBuilder: (context, anim1, anim2, child) {
@@ -57,7 +57,7 @@ class GameOverHelper {
                   fontSize: 16.sp,
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.7),
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               actionsPadding: EdgeInsets.symmetric(

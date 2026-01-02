@@ -23,6 +23,8 @@ class GameState {
   final Move? lastMove;
   final Move? pendingPromotion;
 
+  final PieceColor playerColor;
+
   // Advanced Rules State
   final SquarePosition? enPassantTarget;
   final bool canCastleWhiteKingSide;
@@ -38,6 +40,7 @@ class GameState {
     required this.whiteCaptured,
     required this.blackCaptured,
     required this.gameMode,
+    this.playerColor = PieceColor.white,
     this.isThinking = false,
     this.status = GameStatus.ongoing,
     this.lastMove,
@@ -49,7 +52,10 @@ class GameState {
     this.canCastleBlackQueenSide = true,
   });
 
-  factory GameState.initial({GameMode mode = GameMode.pvp}) {
+  factory GameState.initial({
+    GameMode mode = GameMode.pvp,
+    PieceColor playerColor = PieceColor.white,
+  }) {
     return GameState(
       board: Board.initial(),
       turn: PieceColor.white,
@@ -58,6 +64,7 @@ class GameState {
       whiteCaptured: const [],
       blackCaptured: const [],
       gameMode: mode,
+      playerColor: playerColor,
     );
   }
 
@@ -78,6 +85,7 @@ class GameState {
     bool? canCastleWhiteQueenSide,
     bool? canCastleBlackKingSide,
     bool? canCastleBlackQueenSide,
+    PieceColor? playerColor,
   }) {
     return GameState(
       board: board ?? this.board,
@@ -100,6 +108,7 @@ class GameState {
           canCastleBlackKingSide ?? this.canCastleBlackKingSide,
       canCastleBlackQueenSide:
           canCastleBlackQueenSide ?? this.canCastleBlackQueenSide,
+      playerColor: playerColor ?? this.playerColor,
     );
   }
 }

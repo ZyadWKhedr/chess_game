@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/core/extensions/piece_symbol.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:grandmaster_chess/core/extensions/piece_symbol.dart';
 import '../../domain/entities/piece.dart';
 
 class CapturedPiecesWidget extends StatelessWidget {

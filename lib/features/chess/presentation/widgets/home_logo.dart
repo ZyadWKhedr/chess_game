@@ -11,15 +11,19 @@ class HomeLogo extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(24.r),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             shape: BoxShape.circle,
             border: Border.all(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.1),
               width: 4,
             ),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
                 blurRadius: 20,
                 spreadRadius: 5,
               ),

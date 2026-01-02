@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'features/chess/presentation/pages/chess_home_page.dart';
 import 'features/chess/presentation/provider/theme_provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
   runApp(const ProviderScope(child: ChessApp()));
 }
 

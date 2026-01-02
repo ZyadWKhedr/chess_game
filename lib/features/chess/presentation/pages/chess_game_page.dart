@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_application_1/core/extensions/piece_symbol.dart';
+import 'package:grandmaster_chess/core/extensions/piece_symbol.dart';
 import '../../domain/entities/piece.dart';
 import '../provider/chess_game_notifier.dart';
 import '../provider/game_state.dart';
@@ -40,8 +40,6 @@ class ChessGamePage extends ConsumerWidget {
       }
     });
 
-    final showRotation = state.gameMode == GameMode.pvp;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -62,7 +60,9 @@ class ChessGamePage extends ConsumerWidget {
               icon: Icon(Icons.refresh_rounded, size: 28.sp),
               tooltip: 'Restart Game',
               onPressed: () {
-                ref.read(chessGameProvider.notifier).initGame(state.gameMode);
+                ref
+                    .read(chessGameProvider.notifier)
+                    .initGame(state.gameMode, playerColor: state.playerColor);
               },
             ),
           ),
@@ -72,6 +72,14 @@ class ChessGamePage extends ConsumerWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final isWide = constraints.maxWidth > 800;
+            final isFlipped = state.playerColor == PieceColor.black;
+
+            final topCaptured = isFlipped
+                ? state.whiteCaptured
+                : state.blackCaptured;
+            final bottomCaptured = isFlipped
+                ? state.blackCaptured
+                : state.whiteCaptured;
 
             if (isWide) {
               return Column(
@@ -89,7 +97,7 @@ class ChessGamePage extends ConsumerWidget {
                             flex: 1,
                             child: SingleChildScrollView(
                               child: CapturedPiecesWidget(
-                                captured: state.blackCaptured,
+                                captured: topCaptured,
                               ),
                             ),
                           ),
@@ -103,7 +111,7 @@ class ChessGamePage extends ConsumerWidget {
                             flex: 1,
                             child: SingleChildScrollView(
                               child: CapturedPiecesWidget(
-                                captured: state.whiteCaptured,
+                                captured: bottomCaptured,
                               ),
                             ),
                           ),
@@ -120,25 +128,13 @@ class ChessGamePage extends ConsumerWidget {
                 if (state.isThinking)
                   const LinearProgressIndicator(minHeight: 2),
                 Expanded(
-                  child: AnimatedRotation(
-                    turns: (showRotation && state.turn == PieceColor.black)
-                        ? 0.5
-                        : 0,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                    child: Column(
-                      children: [
-                        GameStatusWidget(
-                          turn: state.turn,
-                          status: state.status,
-                        ),
-                        CapturedPiecesWidget(captured: state.blackCaptured),
-                        const Expanded(
-                          child: Center(child: ChessBoardWidget()),
-                        ),
-                        CapturedPiecesWidget(captured: state.whiteCaptured),
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      GameStatusWidget(turn: state.turn, status: state.status),
+                      CapturedPiecesWidget(captured: topCaptured),
+                      const Expanded(child: Center(child: ChessBoardWidget())),
+                      CapturedPiecesWidget(captured: bottomCaptured),
+                    ],
                   ),
                 ),
               ],
@@ -177,7 +173,9 @@ class ChessGamePage extends ConsumerWidget {
                   child: Container(
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                      border: Border.all(
+                        color: Colors.grey.withValues(alpha: 0.3),
+                      ),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: piece.render(fontSize: 40.sp),

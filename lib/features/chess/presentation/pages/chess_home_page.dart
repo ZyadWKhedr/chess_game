@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../domain/entities/piece.dart';
+import '../provider/chess_game_notifier.dart';
 import '../provider/game_state.dart';
 import '../provider/theme_provider.dart';
 import '../widgets/home_menu_button.dart';
 import '../widgets/home_logo.dart';
+import '../widgets/banner_ad_widget.dart';
+import '../widgets/side_selection_dialog.dart';
+import 'chess_game_page.dart';
 
 class ChessHomePage extends ConsumerWidget {
   const ChessHomePage({super.key});
@@ -45,31 +50,66 @@ class ChessHomePage extends ConsumerWidget {
             ],
           ),
         ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                HomeLogo(),
-                SizedBox(height: 60),
-                HomeMenuButton(
-                  label: 'Local Multiplayer',
-                  icon: Icons.people,
-                  mode: GameMode.pvp,
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const HomeLogo(),
+                        const SizedBox(height: 60),
+                        const HomeMenuButton(
+                          label: 'Local Multiplayer',
+                          icon: Icons.people,
+                          mode: GameMode.pvp,
+                        ),
+                        const SizedBox(height: 20),
+                        HomeMenuButton(
+                          label: 'Play vs AI',
+                          icon: Icons.computer,
+                          mode: GameMode.pva,
+                          onTap: () => _showSideSelectionDialog(context, ref),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                SizedBox(height: 20),
-                HomeMenuButton(
-                  label: 'Play vs AI',
-                  icon: Icons.computer,
-                  mode: GameMode.pva,
-                ),
-              ],
-            ),
+              ),
+              const BannerAdWidget(),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _showSideSelectionDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final selectedColor = await showDialog<PieceColor>(
+      context: context,
+      builder: (context) => const SideSelectionDialog(),
+    );
+
+    if (selectedColor != null) {
+      if (context.mounted) {
+        _startGame(context, ref, selectedColor);
+      }
+    }
+  }
+
+  void _startGame(BuildContext context, WidgetRef ref, PieceColor color) {
+    ref
+        .read(chessGameProvider.notifier)
+        .initGame(GameMode.pva, playerColor: color);
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const ChessGamePage()));
   }
 }

@@ -14,7 +14,9 @@ class GameStatusWidget extends StatelessWidget {
     String statusText = turn == PieceColor.white
         ? "WHITE'S TURN"
         : "BLACK'S TURN";
-    Color statusColor = Theme.of(context).colorScheme.primary.withOpacity(0.8);
+    Color statusColor = Theme.of(
+      context,
+    ).colorScheme.primary.withValues(alpha: 0.8);
 
     if (status == GameStatus.checkmate) {
       statusText = "CHECKMATE";
@@ -61,7 +63,7 @@ class GameStatusWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20.r),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.redAccent.withOpacity(0.4),
+                            color: Colors.redAccent.withValues(alpha: 0.4),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -87,7 +89,7 @@ class GameStatusWidget extends StatelessWidget {
               height: 3.h,
               width: 40.w,
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.3),
+                color: statusColor.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
