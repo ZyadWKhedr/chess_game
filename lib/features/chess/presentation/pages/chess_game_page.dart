@@ -10,6 +10,7 @@ import '../widgets/captured_pieces_widget.dart';
 import '../widgets/game_status_widget.dart';
 import '../widgets/game_over_helper.dart';
 import '../widgets/ai_chat_bubble.dart';
+import '../widgets/game_timer_widget.dart';
 import '../../../../core/providers/ad_provider.dart';
 
 class ChessGamePage extends ConsumerWidget {
@@ -33,6 +34,15 @@ class ChessGamePage extends ConsumerWidget {
             next.gameMode,
             'Checkmate!',
             '$winner wins the game.',
+          );
+        } else if (next.status == GameStatus.timeout) {
+          final winner = next.turn == PieceColor.white ? 'Black' : 'White';
+          _handleGameOver(
+            context,
+            ref,
+            next.gameMode,
+            'Time Out!',
+            '$winner wins on time.',
           );
         } else if (next.status == GameStatus.draw) {
           _handleGameOver(
@@ -68,7 +78,11 @@ class ChessGamePage extends ConsumerWidget {
               onPressed: () {
                 ref
                     .read(chessGameProvider.notifier)
-                    .initGame(state.gameMode, playerColor: state.playerColor);
+                    .initGame(
+                      state.gameMode,
+                      playerColor: state.playerColor,
+                      maxTime: state.maxTime,
+                    );
               },
             ),
           ),
@@ -101,10 +115,30 @@ class ChessGamePage extends ConsumerWidget {
                         children: [
                           Expanded(
                             flex: 1,
-                            child: SingleChildScrollView(
-                              child: CapturedPiecesWidget(
-                                captured: topCaptured,
-                              ),
+                            child: Column(
+                              children: [
+                                GameTimerWidget(
+                                  time: isFlipped
+                                      ? state.whiteTime
+                                      : state.blackTime,
+                                  isActive:
+                                      state.turn ==
+                                      (isFlipped
+                                          ? PieceColor.white
+                                          : PieceColor.black),
+                                  color: isFlipped
+                                      ? PieceColor.white
+                                      : PieceColor.black,
+                                ),
+                                const SizedBox(height: 10),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: CapturedPiecesWidget(
+                                      captured: topCaptured,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(width: 20.w),
@@ -115,10 +149,30 @@ class ChessGamePage extends ConsumerWidget {
                           SizedBox(width: 20.w),
                           Expanded(
                             flex: 1,
-                            child: SingleChildScrollView(
-                              child: CapturedPiecesWidget(
-                                captured: bottomCaptured,
-                              ),
+                            child: Column(
+                              children: [
+                                GameTimerWidget(
+                                  time: isFlipped
+                                      ? state.blackTime
+                                      : state.whiteTime,
+                                  isActive:
+                                      state.turn ==
+                                      (isFlipped
+                                          ? PieceColor.black
+                                          : PieceColor.white),
+                                  color: isFlipped
+                                      ? PieceColor.black
+                                      : PieceColor.white,
+                                ),
+                                const SizedBox(height: 10),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: CapturedPiecesWidget(
+                                      captured: bottomCaptured,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -137,7 +191,35 @@ class ChessGamePage extends ConsumerWidget {
                   child: Column(
                     children: [
                       GameStatusWidget(turn: state.turn, status: state.status),
-                      CapturedPiecesWidget(captured: topCaptured),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 4.h,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: CapturedPiecesWidget(
+                                captured: topCaptured,
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                            GameTimerWidget(
+                              time: isFlipped
+                                  ? state.whiteTime
+                                  : state.blackTime,
+                              isActive:
+                                  state.turn ==
+                                  (isFlipped
+                                      ? PieceColor.white
+                                      : PieceColor.black),
+                              color: isFlipped
+                                  ? PieceColor.white
+                                  : PieceColor.black,
+                            ),
+                          ],
+                        ),
+                      ),
                       Expanded(
                         child: Stack(
                           alignment: Alignment.center,
@@ -153,7 +235,35 @@ class ChessGamePage extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      CapturedPiecesWidget(captured: bottomCaptured),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 4.h,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: CapturedPiecesWidget(
+                                captured: bottomCaptured,
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                            GameTimerWidget(
+                              time: isFlipped
+                                  ? state.blackTime
+                                  : state.whiteTime,
+                              isActive:
+                                  state.turn ==
+                                  (isFlipped
+                                      ? PieceColor.black
+                                      : PieceColor.white),
+                              color: isFlipped
+                                  ? PieceColor.black
+                                  : PieceColor.white,
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

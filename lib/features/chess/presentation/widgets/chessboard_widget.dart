@@ -15,17 +15,17 @@ class ChessBoardWidget extends ConsumerWidget {
     final notifier = ref.read(chessGameProvider.notifier);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Highest contrast tournament colors
+    // Pro-grade tournament colors
     final lightSquareColor = isDark
-        ? const Color(0xFF4B4B4B)
-        : const Color(0xFFF0D9B5);
+        ? const Color(0xFF323438)
+        : const Color(0xFFEAE9D2);
     final darkSquareColor = isDark
-        ? const Color(0xFF2B2B2B)
-        : const Color(0xFFB58863);
+        ? const Color(0xFF1C1E21)
+        : const Color(0xFF4B7399);
 
-    final selectedColor = Colors.yellow.withValues(alpha: 0.6);
-    final lastMoveColor = Colors.blue.withValues(alpha: 0.4);
-    final checkColor = Colors.red.withValues(alpha: 0.6);
+    final selectedColor = const Color(0xFFF7EC78).withValues(alpha: 0.5);
+    final lastMoveColor = const Color(0xFF7BADE3).withValues(alpha: 0.35);
+    final checkColor = const Color(0xFFE91E63).withValues(alpha: 0.4);
 
     final isFlipped = state.playerColor == PieceColor.black;
 

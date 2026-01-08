@@ -27,27 +27,30 @@ class AiChatBubble extends ConsumerWidget {
           margin: EdgeInsets.symmetric(
             horizontal: 8.w,
           ), // Keep horizontal, remove vertical OR just use zero. Let's keep horizontal if needed or just remove margin.
-
           // Actually, let's just minimal margin if needed. But user said "remove space".
           // I'll remove margin property entirely or set to EdgeInsets.zero if default is none.
           // Container default margin is null (no margin).
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16.r),
-              topRight: Radius.circular(16.r),
-              bottomRight: Radius.circular(16.r),
+              topLeft: Radius.circular(20.r),
+              topRight: Radius.circular(20.r),
+              bottomRight: Radius.circular(20.r),
               bottomLeft: Radius.circular(4.r),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 15,
+                spreadRadius: 1,
+                offset: const Offset(0, 8),
               ),
             ],
             border: Border.all(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.08),
+              width: 1.5,
             ),
           ),
           child: Row(

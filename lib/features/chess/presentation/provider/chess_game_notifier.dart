@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../../domain/entities/move.dart';
@@ -12,6 +13,8 @@ import 'game_state.dart';
 class ChessGameNotifier extends StateNotifier<GameState> {
   ChessGameNotifier() : super(GameState.initial());
 
+  Timer? _gameTimer;
+
   final ChessAIService _aiService = ChessAIService();
   late final ChessGameService _gameService = ChessGameService(
     MoveValidator(),
@@ -23,21 +26,65 @@ class ChessGameNotifier extends StateNotifier<GameState> {
     GameMode mode, {
     PieceColor playerColor = PieceColor.white,
     Difficulty difficulty = Difficulty.intermediate,
+    Duration? maxTime,
   }) {
+    _gameTimer?.cancel();
     state = GameState.initial(
       mode: mode,
       playerColor: playerColor,
       difficulty: difficulty,
+      maxTime: maxTime,
     );
+
+    if (maxTime != null) {
+      _startTimer();
+    }
+
     if (mode == GameMode.pva && playerColor == PieceColor.black) {
       _makeAiMove();
     }
   }
 
+  void _startTimer() {
+    _gameTimer?.cancel();
+    _gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state.status != GameStatus.ongoing &&
+          state.status != GameStatus.check) {
+        _gameTimer?.cancel();
+        return;
+      }
+
+      if (state.turn == PieceColor.white) {
+        final newTime = state.whiteTime! - const Duration(seconds: 1);
+        if (newTime.inSeconds <= 0) {
+          state = state.copyWith(
+            whiteTime: Duration.zero,
+            status: GameStatus.timeout,
+          );
+          _gameTimer?.cancel();
+        } else {
+          state = state.copyWith(whiteTime: newTime);
+        }
+      } else {
+        final newTime = state.blackTime! - const Duration(seconds: 1);
+        if (newTime.inSeconds <= 0) {
+          state = state.copyWith(
+            blackTime: Duration.zero,
+            status: GameStatus.timeout,
+          );
+          _gameTimer?.cancel();
+        } else {
+          state = state.copyWith(blackTime: newTime);
+        }
+      }
+    });
+  }
+
   void selectSquare(int row, int col) {
     if (state.isThinking ||
         state.status == GameStatus.checkmate ||
-        state.status == GameStatus.draw) {
+        state.status == GameStatus.draw ||
+        state.status == GameStatus.timeout) {
       return;
     }
 
@@ -48,7 +95,7 @@ class ChessGameNotifier extends StateNotifier<GameState> {
     final piece = state.board.pieceAt(row, col);
 
     if (state.selected?.row == row && state.selected?.col == col) {
-      state = state.copyWith(selected: null, possibleMoves: []);
+      state = state.copyWith(selected: () => null, possibleMoves: []);
       return;
     }
 
@@ -56,7 +103,7 @@ class ChessGameNotifier extends StateNotifier<GameState> {
       HapticFeedback.lightImpact();
       final moves = _gameService.generateMoves(state, row, col);
       state = state.copyWith(
-        selected: SquarePosition(row, col),
+        selected: () => SquarePosition(row, col),
         possibleMoves: moves,
       );
     }
@@ -65,7 +112,8 @@ class ChessGameNotifier extends StateNotifier<GameState> {
   void tryMove(int toRow, int toCol) {
     if (state.isThinking ||
         state.status == GameStatus.checkmate ||
-        state.status == GameStatus.draw) {
+        state.status == GameStatus.draw ||
+        state.status == GameStatus.timeout) {
       return;
     }
 
@@ -113,7 +161,9 @@ class ChessGameNotifier extends StateNotifier<GameState> {
     state = newState;
 
     if (state.status == GameStatus.checkmate ||
-        state.status == GameStatus.draw) {
+        state.status == GameStatus.draw ||
+        state.status == GameStatus.timeout) {
+      _gameTimer?.cancel();
       return;
     }
 
@@ -126,16 +176,18 @@ class ChessGameNotifier extends StateNotifier<GameState> {
     state = state.copyWith(isThinking: true);
     await Future.delayed(const Duration(milliseconds: 800));
 
-    final bestMove = _aiService.findBestMove(
-      state.board,
-      state.turn,
-      state.aiDifficulty,
-    );
+    final bestMove = _aiService.findBestMove(state);
     if (bestMove != null) {
       _applyMove(bestMove);
     } else {
       if (state.isThinking) state = state.copyWith(isThinking: false);
     }
+  }
+
+  @override
+  void dispose() {
+    _gameTimer?.cancel();
+    super.dispose();
   }
 }
 

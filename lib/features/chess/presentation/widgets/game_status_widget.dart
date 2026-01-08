@@ -14,16 +14,16 @@ class GameStatusWidget extends StatelessWidget {
     String statusText = turn == PieceColor.white
         ? "WHITE'S TURN"
         : "BLACK'S TURN";
-    Color statusColor = Theme.of(
-      context,
-    ).colorScheme.primary.withValues(alpha: 0.8);
+    Color statusColor = Theme.of(context).colorScheme.primary;
 
     if (status == GameStatus.checkmate) {
       statusText = "CHECKMATE";
-      statusColor = Colors.redAccent;
+      statusColor = const Color(0xFFE91E63);
     } else if (status == GameStatus.draw) {
       statusText = "DRAW";
-      statusColor = Colors.orangeAccent;
+      statusColor = const Color(0xFF94A3B8);
+    } else if (turn == PieceColor.black) {
+      statusColor = statusColor.withValues(alpha: 0.7);
     }
 
     return Container(
@@ -57,13 +57,15 @@ class GameStatusWidget extends StatelessWidget {
                         vertical: 6.h,
                       ),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.redAccent, Colors.red.shade900],
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFE91E63), Color(0xFF880E4F)],
                         ),
                         borderRadius: BorderRadius.circular(20.r),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.redAccent.withValues(alpha: 0.4),
+                            color: const Color(
+                              0xFFE91E63,
+                            ).withValues(alpha: 0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -89,7 +91,7 @@ class GameStatusWidget extends StatelessWidget {
               height: 3.h,
               width: 40.w,
               decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.3),
+                color: statusColor.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),

@@ -25,16 +25,27 @@ class HomeMenuButton extends ConsumerWidget {
       width: 280.w,
       height: 60.h,
       child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.r),
-          ),
-          elevation: 0,
-          backgroundColor: Theme.of(
-            context,
-          ).colorScheme.primary.withValues(alpha: 0.08),
-          foregroundColor: Theme.of(context).colorScheme.primary,
-        ).copyWith(elevation: ButtonStyleButton.allOrNull(0)),
+        style:
+            ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.r),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              foregroundColor: Theme.of(context).colorScheme.primary,
+              side: BorderSide(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
+              ),
+            ).copyWith(
+              elevation: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.pressed)) return 0;
+                return 8;
+              }),
+              shadowColor: WidgetStateProperty.all(
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              ),
+            ),
         onPressed:
             onTap ??
             () {

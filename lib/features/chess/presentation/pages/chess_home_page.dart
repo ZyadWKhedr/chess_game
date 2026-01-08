@@ -9,6 +9,7 @@ import '../widgets/home_logo.dart';
 import '../widgets/banner_ad_widget.dart';
 import '../widgets/side_selection_dialog.dart';
 import '../widgets/difficulty_selection_dialog.dart';
+import '../widgets/timer_selection_dialog.dart';
 import '../../../../core/providers/ad_provider.dart';
 import 'chess_game_page.dart';
 
@@ -67,10 +68,11 @@ class ChessHomePage extends ConsumerWidget {
                       children: [
                         const HomeLogo(),
                         const SizedBox(height: 60),
-                        const HomeMenuButton(
+                        HomeMenuButton(
                           label: 'Local Multiplayer',
                           icon: Icons.people,
                           mode: GameMode.pvp,
+                          onTap: () => _showTimerSelectionDialog(context, ref),
                         ),
                         const SizedBox(height: 20),
                         HomeMenuButton(
@@ -110,6 +112,26 @@ class ChessHomePage extends ConsumerWidget {
       if (selectedDifficulty != null && context.mounted) {
         _startGame(context, ref, selectedColor, selectedDifficulty);
       }
+    }
+  }
+
+  Future<void> _showTimerSelectionDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final result = await showDialog<Duration?>(
+      context: context,
+      builder: (context) => const TimerSelectionDialog(),
+    );
+
+    if (result != null && context.mounted) {
+      final selectedDuration = result == Duration.zero ? null : result;
+      ref
+          .read(chessGameProvider.notifier)
+          .initGame(GameMode.pvp, maxTime: selectedDuration);
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const ChessGamePage()));
     }
   }
 

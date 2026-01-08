@@ -30,14 +30,63 @@ class ChessApp extends ConsumerWidget {
           theme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.light,
-            colorSchemeSeed: Colors.brown,
-            scaffoldBackgroundColor: Colors.grey[100],
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF1A1C2E),
+              primary: const Color(0xFF1A1C2E),
+              secondary: const Color(0xFF4B7399),
+              surface: Colors.white,
+              surfaceContainerLowest: const Color(0xFFF8F9FE),
+            ),
+            scaffoldBackgroundColor: const Color(0xFFF8F9FE),
+            cardTheme: CardThemeData(
+              elevation: 0,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+            ),
+            appBarTheme: AppBarTheme(
+              backgroundColor: const Color(0xFFF8F9FE),
+              foregroundColor: const Color(0xFF1A1C2E),
+              centerTitle: true,
+              titleTextStyle: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 20.sp,
+                letterSpacing: 1.2,
+                color: const Color(0xFF1A1C2E),
+              ),
+            ),
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
-            colorSchemeSeed: Colors.brown,
-            scaffoldBackgroundColor: Colors.grey[900],
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF0F111A),
+              brightness: Brightness.dark,
+              primary: const Color(0xFFE2E2FF),
+              secondary: const Color(0xFF94A3B8),
+              surface: const Color(0xFF0F111A),
+              surfaceContainerHighest: const Color(0xFF1E293B),
+            ),
+            scaffoldBackgroundColor: const Color(0xFF0F111A),
+            cardTheme: CardThemeData(
+              elevation: 0,
+              color: const Color(0xFF1E293B),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+            ),
+            appBarTheme: AppBarTheme(
+              backgroundColor: const Color(0xFF0F111A),
+              foregroundColor: const Color(0xFFE2E2FF),
+              centerTitle: true,
+              titleTextStyle: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 20.sp,
+                letterSpacing: 1.2,
+                color: const Color(0xFFE2E2FF),
+              ),
+            ),
           ),
           home: const SplashScreen(),
         );
